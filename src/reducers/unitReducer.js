@@ -11,18 +11,30 @@ export function units(state = initialState, action) {
         };
     case unitActionConstants.UNITS_ALL_SUCCESS:
         return {
-            data: state.data.concat(action.units.data),
-            total: action.units.meta.totalCount
+          data: state.data.concat(action.units.data),
+          total: action.units.meta.totalCount
         };
     case unitActionConstants.UNITS_ALL_FAILURE:
         return { 
             error: action.error
         };
-
+    
     case unitActionConstants.UNIT_ID_REQUEST:
       return {
-        data: action.units
+        loading: true,
+        data: state.data,
+        total: state.total
       };
+    case unitActionConstants.UNIT_ID_SUCCESS:
+        return {
+          data: state.data,
+          total: state.total,
+          unitData: action.units
+        };
+    case unitActionConstants.UNIT_ID_FAILURE:
+        return { 
+            error: action.error
+        };
     default:
       return state
   }

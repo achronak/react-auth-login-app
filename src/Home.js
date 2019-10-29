@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { unitActions } from './actions/unitActions';
-import { BASE_URL, PER_PAGE } from './constants/client';
+import { BASE_URL, PER_PAGE, AVAILABLE_BOOKING_YEARS } from './constants/client';
 
 class Home extends React.Component {
 
@@ -10,7 +10,12 @@ class Home extends React.Component {
         super(props);
         this.handleScroll = this.handleScroll.bind(this);
         this.currPage = 1;
+        this.state = {
+            drawerVisible: false,
+            selectedYear: 0,
+        }
     }
+
     componentWillMount() {
         this.loadUnits();
     }
@@ -21,21 +26,36 @@ class Home extends React.Component {
     
     componentWillUnmount() {
         window.removeEventListener('scroll', this.handleScroll);
-        
+
     }
 
-
     loadUnits(page) {
+        this.setState({
+            drawerVisible: false
+        })
         this.props.getUnits(page);
     }
 
-    renderUnit(raw) {
-        const targetId = `unit-${raw.id}`;
+    renderRating(rating) {
         return(
-            <div id={targetId} key={targetId}
+            <div className="rating row pl-2" title={`Rating: ${rating}`}>
+                <div><img className={rating>=1?'active':''} src="/star.png"/></div>
+                <div><img className={rating>=2?'active':''} src="/star.png"/></div>
+                <div><img className={rating>=3?'active':''} src="/star.png"/></div>
+                <div><img className={rating>=4?'active':''} src="/star.png"/></div>
+                <div><img className={rating>=5?'active':''} src="/star.png"/></div>
+            </div>
+        )
+    }
+
+    renderUnit(raw) {
+        const targetId = `${raw.id}`;
+        return(
+            <div id={targetId} key={targetId} 
+                onClick={this.handleClick.bind(this, targetId)}
                 className="col-md-6 col-lg-4 unit mb-5 px-3">
                 <div>
-                    <img className="mb-3" src={`${BASE_URL}${raw.pictures[0]}`}/>
+                    <img className="hero mb-3" src={`${BASE_URL}${raw.pictures[0]}`}/>
                 </div>
                 <div className="row">
                     <div className="col-12">
@@ -51,7 +71,71 @@ class Home extends React.Component {
                         <b>BTC {raw.price}</b>
                     </div>
                     <div className="col-12">
-                        {raw.rating}
+                        {this.renderRating(raw.rating)}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    renderDrawer(unit) {
+        return (
+            <div>
+                <div>
+                    <img className="hero" src={`${BASE_URL}${unit.pictures[0]}`}/>
+                </div>
+                <div className="row p-3">
+                    
+                    <div className="col-8">
+                        <b>{unit.name} - {unit.region}</b>
+                    </div>
+                    <div className="col-12 col-md-4 text-right price pl-0">
+                        <b>BTC {unit.price}</b>
+                    </div>
+                    
+                    <div className="col-12 mt-2 mb-1">
+                        {this.renderRating(unit.rating)}
+                    </div>
+                    <div className="col-12 mt-2 small-text">
+                        <i>Description:</i> {unit.description}
+                    </div>
+                    <div className="col-12 mt-3 small-text">
+                        <b>Amenities: </b>
+                        { unit.amenities.join(', ')}
+                    </div>
+                    <div className="col-12 mt-3">
+                        <div className="row px-2">
+                            { AVAILABLE_BOOKING_YEARS.map(item => {
+                                let available = {disabled: 'disabled'};
+                                let selectedYear = '';
+                                let aria = true;
+                                if(unit.availability.includes(item)){
+                                    available = {};
+                                    aria = false;
+                                }
+                                if(this.state.selectedYear === item){
+                                    selectedYear = 'active';
+                                }
+
+                                return (
+                                    <div key={item} className="col-3 mb-3 mx-auto">
+                                        <input className={`pill btn btn-light ${selectedYear}`} 
+                                            type="button"
+                                            onClick={this.handleBookingSelect.bind(this, item)}
+                                            {...available}
+                                            aria-disabled={aria}
+                                            value={item}></input>
+                                    </div>
+                                    );
+                                })
+                            }
+                        </div>
+                    </div>
+                    <div className="col-12 text-right">
+                    <input className="btn btn-dark px-4"
+                        type="button"
+                        onClick={this.handleBookingClick.bind(this)}
+                        value="Book"></input>
                     </div>
                 </div>
             </div>
@@ -59,23 +143,39 @@ class Home extends React.Component {
     }
 
     render() {
-        const { user, units } = this.props;
-        const unitsData = units && units.data;
+        const { user, unitsData, unitSingle, loading } = this.props;
+        const { drawerVisible } = this.state;
+        const drawerStatus = drawerVisible ? 0: '';
+
         return (
             <div>
-                <div className="row justify-content-between mt-4">
-                    <div className="col-6 ">
-                        <h5 className="mb-5">
-                            TEST TEST 
+                <div className="row justify-content-between mt-3">
+                    <div className="col-7 mt-3">
+                        <h5 className="mb-2">
+                            Blueground on <span className="mars light">Mars</span>
                         </h5>
                     </div>
                     <div className="col-5 text-right">
-                        <h6>
+                        <span>
                             <img className="profilePic mr-2" src={user.picture}/>
                             {user.name}
-                        </h6>(<Link to="/login">Logout</Link>)
+                        </span>(<Link to="/login">Logout</Link>)
                     </div>
                 </div>
+                
+                <div id="drawer">
+                    <div className="position-fixed h-100 w-sidebar" style={{right: drawerStatus}}>
+                        {loading && 
+                            <div className="col-12 col-md-4 my-4 mx-auto">
+                                <em>Loading unit data...</em>
+                            </div>
+                        }
+                        {unitSingle && 
+                            this.renderDrawer(unitSingle)
+                        }
+                    </div>
+                </div>
+                
                 <div className="row justify-content-between mt-5">
                     { unitsData && unitsData.map(raw => {
                         return (
@@ -84,13 +184,13 @@ class Home extends React.Component {
                     })}
                 </div>
                 <div className="col-md-3 my-4 mx-auto p-4">
-                    {units.loading && <em>Loading units...</em>}
+                    {loading && <em>Loading units...</em>}
                 </div>
             </div>
         );
     }
 
-    handleScroll(e) {
+    handleScroll() {
         const { unitsTotal } = this.props;
         if ( window.innerHeight + document.documentElement.scrollTop
             === document.documentElement.offsetHeight) {               
@@ -100,19 +200,40 @@ class Home extends React.Component {
         }
     }
 
-}
+    handleClick(targetId) {
+        this.setState({
+            drawerVisible: true
+        })
+        this.props.getUnit(targetId);
+    }
 
+    handleBookingSelect(year) {
+        this.setState({
+            selectedYear: year
+        })
+    }
+
+    handleBookingClick(targetId) {
+        const { selectedYear } = this.state;
+        //this.props.bookUnit(selectedYear);
+    }
+
+}
 
 
 function mapState(state) {
     const { userAuth, units } = state;
     const user = userAuth.data.user;
     const unitsTotal = units.total;
-    return { user, units, unitsTotal };
+    const unitsData = units.data;
+    const unitSingle = units.unitData;
+    const loading = units.loading;
+    return { user, unitsData, unitsTotal, unitSingle, loading};
 }
 
 const actionCreators = {
     getUnits: unitActions.getAllPaged,
+    getUnit:  unitActions.getUnitById,
 }
 
 const connectedHomePage = connect(mapState, actionCreators)(Home);

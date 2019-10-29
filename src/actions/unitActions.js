@@ -3,7 +3,8 @@ import { unitService } from '../services/unitService';
 import { history } from '../helpers/utils';
 
 export const unitActions = {
-    getAllPaged
+    getAllPaged,
+    getUnitById
 };
 
 function getAllPaged(page) {
@@ -17,6 +18,23 @@ function getAllPaged(page) {
                 ),
                 error => dispatch(
                     { type: unitActionConstants.GETALL_FAILURE, error }
+                )
+            );
+    };
+}
+
+
+function getUnitById(id) {
+    return dispatch => {
+        dispatch({ type: unitActionConstants.UNIT_ID_REQUEST });
+
+        unitService.getById(id)
+            .then(
+                units => dispatch(
+                    { type: unitActionConstants.UNIT_ID_SUCCESS, units }
+                ),
+                error => dispatch(
+                    { type: unitActionConstants.UNIT_ID_FAILURE, error }
                 )
             );
     };

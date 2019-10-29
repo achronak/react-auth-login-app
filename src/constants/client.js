@@ -1,6 +1,8 @@
 export const BASE_URL = 'http://mars.theblueground.net';
 export const BACKEND_URL = `${BASE_URL}/api`;
 export const PER_PAGE = 9;
+export const AVAILABLE_BOOKING_YEARS = [
+    2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088];
 
 export const userActionConstants = {
 
@@ -18,4 +20,6 @@ export const unitActionConstants = {
     UNITS_ALL_FAILURE: 'UNITS_ALL_FAILURE',
 
     UNIT_ID_REQUEST:   'UNIT_ID_REQUEST',
+    UNIT_ID_SUCCESS:   'UNIT_ID_SUCCESS',
+    UNIT_ID_FAILURE:   'UNIT_ID_FAILURE',
 };
