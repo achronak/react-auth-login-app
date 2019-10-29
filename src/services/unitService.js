@@ -1,8 +1,8 @@
 import { authHeader, handleResponse } from '../helpers/utils';
-import { BACKEND_URL } from '../constants/client';
+import { BACKEND_URL, PER_PAGE } from '../constants/client';
 
 export const unitService = {
-    getAll,
+    getAllPaged,
     getById
 };
 
@@ -15,13 +15,13 @@ function getById(id) {
     return fetch(`${BACKEND_URL}/units/${id}`, requestOptions).then(handleResponse);
 }
 
-function getAll() {
+function getAllPaged(page = 1) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
     };
 
-    return fetch(`${BACKEND_URL}/units`, requestOptions)
+    return fetch(`${BACKEND_URL}/units?page=${page}&perPage=${PER_PAGE}`, requestOptions)
         .then(handleResponse);
 }
 

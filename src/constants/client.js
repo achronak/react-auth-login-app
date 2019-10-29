@@ -1,5 +1,6 @@
 export const BASE_URL = 'http://mars.theblueground.net';
 export const BACKEND_URL = `${BASE_URL}/api`;
+export const PER_PAGE = 9;
 
 export const userActionConstants = {
 

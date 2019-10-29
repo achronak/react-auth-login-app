@@ -3,14 +3,14 @@ import { unitService } from '../services/unitService';
 import { history } from '../helpers/utils';
 
 export const unitActions = {
-    getAll
+    getAllPaged
 };
 
-function getAll() {
+function getAllPaged(page) {
     return dispatch => {
         dispatch({ type: unitActionConstants.UNITS_ALL_REQUEST });
 
-        unitService.getAll()
+        unitService.getAllPaged(page)
             .then(
                 units => dispatch(
                     { type: unitActionConstants.UNITS_ALL_SUCCESS, units }
