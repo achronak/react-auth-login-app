@@ -1,4 +1,5 @@
-export const BACKEND_URL = 'http://mars.theblueground.net/api';
+export const BASE_URL = 'http://mars.theblueground.net';
+export const BACKEND_URL = `${BASE_URL}/api`;
 
 export const userActionConstants = {
 
@@ -7,4 +8,13 @@ export const userActionConstants = {
     LOGIN_FAILURE: 'USER_LOGIN_FAILURE',
     
     LOGOUT: 'USER_LOGOUT',
+};
+
+export const unitActionConstants = {
+
+    UNITS_ALL_REQUEST: 'UNITS_ALL_REQUEST',
+    UNITS_ALL_SUCCESS: 'UNITS_ALL_SUCCESS',
+    UNITS_ALL_FAILURE: 'UNITS_ALL_FAILURE',
+
+    UNIT_ID_REQUEST:   'UNIT_ID_REQUEST',
 };

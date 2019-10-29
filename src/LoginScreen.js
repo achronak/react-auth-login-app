@@ -38,7 +38,7 @@ class LoginScreen extends React.Component {
         const { loggingIn } = this.props;
         const { email, password, submitted } = this.state;
         return (
-            <div className="loginbox col-xl-5 col-md-6 mx-auto p-4">
+            <div className="loginbox col-xl-5 col-md-6 mt-5 mx-auto p-4">
                 <h5 className="mb-5 mt-2">
                     Blueground on <span className="mars">Mars</span>
                 </h5>

@@ -9,17 +9,15 @@ class App extends Component {
     
     render() {
         return (
-            <div className="mt-5">
-                <div className="container">
-                  <Router history={history}>
-                      <Switch>
-                          <PrivateRoute exact path="/" component={Home} />
-                          <Route path="/login" component={LoginScreen} />
-                          <Redirect from="*" to="/" />
-                      </Switch>
-                  </Router>
-                  </div>
-            </div>
+            <div className="container">
+              <Router history={history}>
+                  <Switch>
+                      <PrivateRoute exact path="/" component={Home} />
+                      <Route path="/login" component={LoginScreen} />
+                      <Redirect from="*" to="/" />
+                  </Switch>
+              </Router>
+              </div>
         );
     }
 }

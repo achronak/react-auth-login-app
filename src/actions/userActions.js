@@ -1,6 +1,5 @@
 import { userActionConstants } from '../constants/client';
 import { userService } from '../services/userService';
-//import { alertActions } from './';
 import { history } from '../helpers/utils';
 
 export const userActions = {
