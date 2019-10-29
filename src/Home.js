@@ -39,11 +39,11 @@ class Home extends React.Component {
     renderRating(rating) {
         return(
             <div className="rating row pl-2" title={`Rating: ${rating}`}>
-                <div><img className={rating>=1?'active':''} src="/star.png"/></div>
-                <div><img className={rating>=2?'active':''} src="/star.png"/></div>
-                <div><img className={rating>=3?'active':''} src="/star.png"/></div>
-                <div><img className={rating>=4?'active':''} src="/star.png"/></div>
-                <div><img className={rating>=5?'active':''} src="/star.png"/></div>
+                <div><img alt="1 star" className={rating>=1?'active':''} src="/star.png"/></div>
+                <div><img alt="2 stars" className={rating>=2?'active':''} src="/star.png"/></div>
+                <div><img alt="3 stars" className={rating>=3?'active':''} src="/star.png"/></div>
+                <div><img alt="4 stars" className={rating>=4?'active':''} src="/star.png"/></div>
+                <div><img alt="5 stars" className={rating>=5?'active':''} src="/star.png"/></div>
             </div>
         )
     }
@@ -52,10 +52,10 @@ class Home extends React.Component {
         const targetId = `${raw.id}`;
         return(
             <div id={targetId} key={targetId} 
-                onClick={this.handleClick.bind(this, targetId)}
+                onClick={this.handleUnitClick.bind(this, targetId)}
                 className="col-md-6 col-lg-4 unit mb-5 px-3">
                 <div>
-                    <img className="hero mb-3" src={`${BASE_URL}${raw.pictures[0]}`}/>
+                    <img alt={`${raw.name} - ${raw.region}`} className="hero mb-3" src={`${BASE_URL}${raw.pictures[0]}`}/>
                 </div>
                 <div className="row">
                     <div className="col-12">
@@ -82,7 +82,7 @@ class Home extends React.Component {
         return (
             <div>
                 <div>
-                    <img className="hero" src={`${BASE_URL}${unit.pictures[0]}`}/>
+                    <img alt={`${unit.name} - ${unit.region}`} className="hero" src={`${BASE_URL}${unit.pictures[0]}`}/>
                 </div>
                 <div className="row p-3">
                     
@@ -157,7 +157,7 @@ class Home extends React.Component {
                     </div>
                     <div className="col-5 text-right">
                         <span>
-                            <img className="profilePic mr-2" src={user.picture}/>
+                            <img alt="profile-pic" className="profilePic mr-2" src={user.picture}/>
                             {user.name}
                         </span>(<Link to="/login">Logout</Link>)
                     </div>
@@ -200,9 +200,10 @@ class Home extends React.Component {
         }
     }
 
-    handleClick(targetId) {
+    handleUnitClick(targetId) {
         this.setState({
-            drawerVisible: true
+            drawerVisible: true,
+            selectedYear: 0,
         })
         this.props.getUnit(targetId);
     }
