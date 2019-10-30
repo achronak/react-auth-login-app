@@ -24,11 +24,12 @@ class LoginScreen extends React.Component {
         const { name, value } = e.target;
         this.setState({ [name]: value });
         
-        if(!this.emailRegex.test(e.target.value)){
+        if(e.target.name === 'email' && !this.emailRegex.test(e.target.value)){
             this.setState({ regexError: true });
         } else {
             this.setState({ regexError: false });
         }
+        
     }
 
     handleSubmit(e) {
