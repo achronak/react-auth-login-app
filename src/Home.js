@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { unitActions } from './actions/unitActions';
-import { BASE_URL, PER_PAGE, AVAILABLE_BOOKING_YEARS } from './constants/client';
+import { PER_PAGE, AVAILABLE_BOOKING_YEARS } from './constants/client';
+import { resolveImg } from './helpers/utils';
 
 class Home extends React.Component {
 
@@ -39,11 +40,11 @@ class Home extends React.Component {
     renderRating(rating) {
         return(
             <div className="rating row pl-2" title={`Rating: ${rating}`}>
-                <div><img alt="1 star" className={rating>=1?'active':''} src="/star.png"/></div>
-                <div><img alt="2 stars" className={rating>=2?'active':''} src="/star.png"/></div>
-                <div><img alt="3 stars" className={rating>=3?'active':''} src="/star.png"/></div>
-                <div><img alt="4 stars" className={rating>=4?'active':''} src="/star.png"/></div>
-                <div><img alt="5 stars" className={rating>=5?'active':''} src="/star.png"/></div>
+                <div><img alt="1 star" className={rating >= 1 ? 'active':''} src="/star.png"/></div>
+                <div><img alt="2 stars" className={rating >= 2 ? 'active':''} src="/star.png"/></div>
+                <div><img alt="3 stars" className={rating >= 3 ? 'active':''} src="/star.png"/></div>
+                <div><img alt="4 stars" className={rating >= 4 ? 'active':''} src="/star.png"/></div>
+                <div><img alt="5 stars" className={rating >= 5 ? 'active':''} src="/star.png"/></div>
             </div>
         )
     }
@@ -55,7 +56,8 @@ class Home extends React.Component {
                 onClick={this.handleUnitClick.bind(this, targetId)}
                 className="col-md-6 col-lg-4 unit mb-5 px-3">
                 <div>
-                    <img alt={`${raw.name} - ${raw.region}`} className="hero mb-3" src={`${BASE_URL}${raw.pictures[0]}`}/>
+                    <img alt={`${raw.name} - ${raw.region}`} className="hero mb-3"
+                        src={resolveImg(`${raw.pictures[0]}`, 'md')}/>
                 </div>
                 <div className="row">
                     <div className="col-12">
@@ -82,7 +84,8 @@ class Home extends React.Component {
         return (
             <div>
                 <div>
-                    <img alt={`${unit.name} - ${unit.region}`} className="hero" src={`${BASE_URL}${unit.pictures[0]}`}/>
+                    <img alt={`${unit.name} - ${unit.region}`} className="hero"
+                        src={resolveImg(`${unit.pictures[0]}`)}/>
                 </div>
                 <div className="row p-3">
                     
@@ -165,9 +168,10 @@ class Home extends React.Component {
                 
                 <div id="drawer">
                     <div className="position-fixed h-100 w-sidebar" style={{right: drawerStatus}}>
-                        {loading && 
-                            <div className="col-12 col-md-4 my-4 mx-auto">
-                                <em>Loading unit data...</em>
+                        { loading &&
+                            <div className="text-center">
+                                <img className="loading mt-5 mb-2 mx-auto d-block" src="/loading.gif"/>
+                                <em>Loading unit information...</em>
                             </div>
                         }
                         {unitSingle && 
@@ -183,8 +187,13 @@ class Home extends React.Component {
                         );
                     })}
                 </div>
-                <div className="col-md-3 my-4 mx-auto p-4">
-                    {loading && <em>Loading units...</em>}
+                <div className="col-md-4 my-4 mx-auto p-4 text-center">
+                    { loading &&
+                        <div>
+                            <img className="loading mb-2 mx-auto d-block" src="/loading.gif"/>
+                            <em>Loading units...</em>
+                        </div>
+                    }
                 </div>
             </div>
         );

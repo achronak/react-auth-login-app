@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-
+import { BASE_URL } from '../constants/client';
 
 export const history = createBrowserHistory();
 
@@ -40,6 +40,34 @@ export function handleResponse(response) {
     });
 }
 
+export function resolveImg(url, forceRes = null) {
+    const imgUrls = {
+        'sm': 'w200',
+        'md': 'w400',
+        'lg': 'w800',
+    }
+    console.warn(forceRes)
+    let selector = imgUrls['lg']
+    
+        if (getScreenResolution()[0] <= 580){
+            selector = imgUrls['sm']
+        } else if (getScreenResolution()[0] <= 768){
+            selector = imgUrls['md']
+        } else if (forceRes) { // apply forced resolution only on big screens
+            selector = imgUrls[forceRes]
+        }
+    url = url.replace( new RegExp("\\w[0-9][0-9][0-9]","g"), selector)
+    
+    return `${BASE_URL}${url}`;
+}
+
 export function logout() {
     localStorage.removeItem('user');
+}
+
+export function getScreenResolution() {
+   return ([
+       window.screen.width,
+       window.screen.height
+    ]);
 }
