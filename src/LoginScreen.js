@@ -12,9 +12,10 @@ class LoginScreen extends React.Component {
         this.state = {
             email: '',
             password: '',
-            submitted: false
+            submitted: false,
+            regexError: false
         };
-
+        this.emailRegex = RegExp('^[a-zA-Z]{2,8}@[0-9]{4}.[a-zA-Z]{2}$');
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -22,21 +23,27 @@ class LoginScreen extends React.Component {
     handleChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
+        
+        if(!this.emailRegex.test(e.target.value)){
+            this.setState({ regexError: true });
+        } else {
+            this.setState({ regexError: false });
+        }
     }
 
     handleSubmit(e) {
         e.preventDefault();
 
         this.setState({ submitted: true });
-        const { email, password } = this.state;
-        if (email && password) {
+        const { email, password, regexError } = this.state;
+        if (email && password && !regexError) {
             this.props.login(email, password);
         }
     }
 
     render() {
         const { loggingIn } = this.props;
-        const { email, password, submitted } = this.state;
+        const { email, password, submitted, regexError} = this.state;
         return (
             <div className="loginbox col-xl-5 col-md-6 mt-5 mx-auto p-4">
                 <h5 className="mb-5 mt-2">
@@ -47,6 +54,9 @@ class LoginScreen extends React.Component {
                         <input type="text" className="form-control" placeholder="Colonist ID" name="email" value={email} onChange={this.handleChange} />
                         {submitted && !email &&
                             <div className="help-block">Colonist ID is required</div>
+                        }
+                        {email && regexError && 
+                            <div className="help-block">Invalid Colonist ID</div>
                         }
                     </div>
                     <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>
