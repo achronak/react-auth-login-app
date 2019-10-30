@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { unitActions } from './actions/unitActions';
 import { PER_PAGE, AVAILABLE_BOOKING_YEARS } from './constants/client';
 import { resolveImg } from './helpers/utils';
+import { trapFocus, resetTrapFocus } from './helpers/focus';
 
 class Home extends React.Component {
 
@@ -34,6 +35,11 @@ class Home extends React.Component {
         window.removeEventListener('scroll', this.handleScroll);
         window.removeEventListener('click', this.handleDrawer);
         window.removeEventListener('keyup', this.handleDrawer);
+    }
+
+    componentDidUpdate(){
+        document.getElementById('sheet').style.height = 
+                (document.body.clientHeight + 200) + 'px';
     }
 
     loadUnits(page) {
@@ -85,6 +91,10 @@ class Home extends React.Component {
     }
 
     renderDrawer(unit) {
+        const { drawerVisible } = this.state;
+        drawerVisible && setTimeout(() => {
+            trapFocus(document.getElementById('drawer'));
+        }, 100);
         return (
             <div>
                 <div>
@@ -216,6 +226,7 @@ class Home extends React.Component {
             drawerVisible: false,
             selectedYear: 0,
         })
+        resetTrapFocus(document.getElementById('drawer'));
     }
 
     handleScroll() {

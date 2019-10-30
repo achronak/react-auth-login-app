@@ -1,6 +1,5 @@
 import { unitActionConstants } from '../constants/client';
 import { unitService } from '../services/unitService';
-import { history } from '../helpers/utils';
 
 export const unitActions = {
     getAllPaged,
