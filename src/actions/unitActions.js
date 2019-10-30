@@ -3,7 +3,8 @@ import { unitService } from '../services/unitService';
 
 export const unitActions = {
     getAllPaged,
-    getUnitById
+    getUnitById,
+    bookUnit
 };
 
 function getAllPaged(page) {
@@ -16,7 +17,7 @@ function getAllPaged(page) {
                     { type: unitActionConstants.UNITS_ALL_SUCCESS, units }
                 ),
                 error => dispatch(
-                    { type: unitActionConstants.GETALL_FAILURE, error }
+                    { type: unitActionConstants.UNITS_ALL_FAILURE, error }
                 )
             );
     };
@@ -34,6 +35,22 @@ function getUnitById(id) {
                 ),
                 error => dispatch(
                     { type: unitActionConstants.UNIT_ID_FAILURE, error }
+                )
+            );
+    };
+}
+
+function bookUnit(unitId, year) {
+    return dispatch => {
+        dispatch({ type: unitActionConstants.UNITS_BOOK_REQUEST });
+
+        unitService.book(unitId, year)
+            .then(
+                bookingReference => dispatch(
+                    { type: unitActionConstants.UNITS_BOOK_SUCCESS, bookingReference }
+                ),
+                error => dispatch(
+                    { type: unitActionConstants.UNITS_BOOK_FAILURE, error }
                 )
             );
     };

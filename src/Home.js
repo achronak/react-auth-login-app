@@ -39,7 +39,7 @@ class Home extends React.Component {
 
     componentDidUpdate(){
         document.getElementById('sheet').style.height = 
-                (document.body.clientHeight + 200) + 'px';
+                document.body.clientHeight + 'px';
     }
 
     loadUnits(page) {
@@ -60,6 +60,7 @@ class Home extends React.Component {
     }
 
     renderUnit(raw) {
+        const {booking} = this.props;
         const targetId = `${raw.id}`;
         return(
             <div id={targetId} key={targetId} 
@@ -82,9 +83,14 @@ class Home extends React.Component {
                     <div className="col-12">
                         <b>BTC {raw.price}</b>
                     </div>
-                    <div className="col-12">
+                    <div className="col-6">
                         {this.renderRating(raw.rating)}
                     </div>
+                    {booking && booking.unitId === targetId &&
+                        <div className="col-6 text-right booked">
+                            You just booked it!
+                        </div>
+                    }
                 </div>
             </div>
         )
@@ -151,7 +157,7 @@ class Home extends React.Component {
                     <div className="col-12 text-right">
                     <input className="btn btn-dark px-4"
                         type="button"
-                        onClick={this.handleBookingClick.bind(this)}
+                        onClick={this.handleBookingClick.bind(this, unit.id)}
                         value="Book"></input>
                     </div>
                 </div>
@@ -160,11 +166,11 @@ class Home extends React.Component {
     }
 
     render() {
-        const { user, unitsData, unitSingle, loading } = this.props;
+        const { user, unitsData, unitSingle, loading, error } = this.props;
         const { drawerVisible } = this.state;
         const drawerStatus = drawerVisible ? 0: '';
         const sheetStatus = drawerVisible ? 'block': 'none';
-
+        
         return (
             <div>
                 <div id="sheet" style={{display: sheetStatus}}></div>
@@ -181,12 +187,16 @@ class Home extends React.Component {
                         </span>(<Link to="/login">Logout</Link>)
                     </div>
                 </div>
-                
+                {error && 
+                    <div className="text-center mt-4 alert alert-danger d-block">
+                        Error: {error}
+                    </div>
+                }
                 <div id="drawer">
                     <div className="position-fixed h-100 w-sidebar" style={{right: drawerStatus}}>
                         { loading &&
                             <div className="text-center">
-                                <img className="loading mt-5 mb-2 mx-auto d-block" src="/loading.gif"/>
+                                <img alt="loading" className="loading mt-5 mb-2 mx-auto d-block" src="/loading.gif"/>
                                 <em>Loading unit information...</em>
                             </div>
                         }
@@ -206,7 +216,7 @@ class Home extends React.Component {
                 <div className="col-md-4 my-4 mx-auto p-4 text-center">
                     { loading &&
                         <div>
-                            <img className="loading mb-2 mx-auto d-block" src="/loading.gif"/>
+                            <img alt="loading" className="loading mb-2 mx-auto d-block" src="/loading.gif"/>
                             <em>Loading units...</em>
                         </div>
                     }
@@ -255,25 +265,31 @@ class Home extends React.Component {
 
     handleBookingClick(targetId) {
         const { selectedYear } = this.state;
-        //this.props.bookUnit(selectedYear);
+        if (!selectedYear)
+            return;
+        this.props.bookUnit(targetId, selectedYear);
+        this.resetDrawer();
     }
 
 }
 
 
 function mapState(state) {
-    const { userAuth, units } = state;
+    const { userAuth, units} = state;
     const user = userAuth.data.user;
     const unitsTotal = units.total;
     const unitsData = units.data;
     const unitSingle = units.unitData;
     const loading = units.loading;
-    return { user, unitsData, unitsTotal, unitSingle, loading};
+    const booking = units.booking;
+    const error = units.error;
+    return { user, unitsData, unitsTotal, unitSingle, booking, loading, error};
 }
 
 const actionCreators = {
     getUnits: unitActions.getAllPaged,
     getUnit:  unitActions.getUnitById,
+    bookUnit: unitActions.bookUnit
 }
 
 const connectedHomePage = connect(mapState, actionCreators)(Home);

@@ -3,7 +3,8 @@ import { BACKEND_URL, PER_PAGE } from '../constants/client';
 
 export const unitService = {
     getAllPaged,
-    getById
+    getById,
+    book
 };
 
 function getById(id) {
@@ -22,6 +23,17 @@ function getAllPaged(page = 1) {
     };
 
     return fetch(`${BACKEND_URL}/units?page=${page}&perPage=${PER_PAGE}`, requestOptions)
+        .then(handleResponse);
+}
+
+function book(unitId, year) {
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+        body: JSON.stringify({ unitId, year })
+    };
+
+    return fetch(`${BACKEND_URL}/units/book`, requestOptions)
         .then(handleResponse);
 }
 
