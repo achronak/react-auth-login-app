@@ -17,7 +17,7 @@ export function authHeader() {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.token) {
-        return { 'Authorization': 'Bearer ' + user.token.accessToken };
+        return { 'Authorization': user.token.tokenType + ' ' + user.token.accessToken };
     } else {
         return {};
     }
@@ -40,29 +40,28 @@ export function handleResponse(response) {
     });
 }
 
+export function logout() {
+    localStorage.removeItem('user');
+}
+
 export function resolveImg(url, forceRes = null) {
     const imgUrls = {
         'sm': 'w200',
         'md': 'w400',
         'lg': 'w800',
     }
-    console.warn(forceRes)
     let selector = imgUrls['lg']
     
-        if (getScreenResolution()[0] <= 580){
-            selector = imgUrls['sm']
-        } else if (getScreenResolution()[0] <= 768){
-            selector = imgUrls['md']
-        } else if (forceRes) { // apply forced resolution only on big screens
-            selector = imgUrls[forceRes]
-        }
+    if (getScreenResolution()[0] <= 580){
+        selector = imgUrls['sm']
+    } else if (getScreenResolution()[0] <= 768){
+        selector = imgUrls['md']
+    } else if (forceRes) { // apply forced resolution(if any) only on big screens
+        selector = imgUrls[forceRes]
+    }
     url = url.replace( new RegExp("\\w[0-9][0-9][0-9]","g"), selector)
     
     return `${BASE_URL}${url}`;
-}
-
-export function logout() {
-    localStorage.removeItem('user');
 }
 
 export function getScreenResolution() {

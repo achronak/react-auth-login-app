@@ -10,6 +10,9 @@ class Home extends React.Component {
     constructor (props) {
         super(props);
         this.handleScroll = this.handleScroll.bind(this);
+        this.handleDrawer = this.handleDrawer.bind(this);
+        this.resetDrawer = this.resetDrawer.bind(this);
+
         this.currPage = 1;
         this.state = {
             drawerVisible: false,
@@ -23,17 +26,18 @@ class Home extends React.Component {
 
     componentDidMount() {
         window.addEventListener('scroll', this.handleScroll);
+        window.addEventListener('click', this.handleDrawer);
+        window.addEventListener('keyup', this.handleDrawer);
     }
     
     componentWillUnmount() {
         window.removeEventListener('scroll', this.handleScroll);
-
+        window.removeEventListener('click', this.handleDrawer);
+        window.removeEventListener('keyup', this.handleDrawer);
     }
 
     loadUnits(page) {
-        this.setState({
-            drawerVisible: false
-        })
+        this.resetDrawer();
         this.props.getUnits(page);
     }
 
@@ -87,7 +91,7 @@ class Home extends React.Component {
                     <img alt={`${unit.name} - ${unit.region}`} className="hero"
                         src={resolveImg(`${unit.pictures[0]}`)}/>
                 </div>
-                <div className="row p-3">
+                <div className="row m-0 py-3">
                     
                     <div className="col-8">
                         <b>{unit.name} - {unit.region}</b>
@@ -149,9 +153,11 @@ class Home extends React.Component {
         const { user, unitsData, unitSingle, loading } = this.props;
         const { drawerVisible } = this.state;
         const drawerStatus = drawerVisible ? 0: '';
+        const sheetStatus = drawerVisible ? 'block': 'none';
 
         return (
             <div>
+                <div id="sheet" style={{display: sheetStatus}}></div>
                 <div className="row justify-content-between mt-3">
                     <div className="col-7 mt-3">
                         <h5 className="mb-2">
@@ -197,6 +203,19 @@ class Home extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    handleDrawer(e) {
+        if (e.target.closest('#sheet') || e.key === "Escape") {
+            this.resetDrawer();
+        }
+    }
+
+    resetDrawer(){
+        this.setState({
+            drawerVisible: false,
+            selectedYear: 0,
+        })
     }
 
     handleScroll() {
