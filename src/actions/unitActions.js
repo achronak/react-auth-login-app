@@ -4,7 +4,8 @@ import { unitService } from '../services/unitService';
 export const unitActions = {
     getAllPaged,
     getUnitById,
-    bookUnit
+    bookUnit,
+    searchUnits
 };
 
 function getAllPaged(page) {
@@ -51,6 +52,23 @@ function bookUnit(unitId, year) {
                 ),
                 error => dispatch(
                     { type: unitActionConstants.UNITS_BOOK_FAILURE, error }
+                )
+            );
+    };
+}
+
+
+function searchUnits(str) {
+    return dispatch => {
+        dispatch({ type: unitActionConstants.UNITS_SEARCH_REQUEST });
+
+        unitService.search(str)
+            .then(
+                units => dispatch(
+                    { type: unitActionConstants.UNITS_SEARCH_SUCCESS, units }
+                ),
+                error => dispatch(
+                    { type: unitActionConstants.UNITS_SEARCH_FAILURE, error }
                 )
             );
     };

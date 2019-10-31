@@ -56,6 +56,26 @@ export function units(state = initialState, action) {
         ...state,
         error: action.error,
       };
+    
+    case unitActionConstants.UNITS_SEARCH_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        data : []
+      };
+    case unitActionConstants.UNITS_SEARCH_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        data: action.units.data,
+        total: action.units.meta.totalCount,  
+      };
+    case unitActionConstants.UNITS_SEARCH_FAILURE:
+      return { 
+        ...state,
+        error: action.error
+      };
+
     default:
       return state
   }

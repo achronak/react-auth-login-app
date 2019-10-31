@@ -4,7 +4,8 @@ import { BACKEND_URL, PER_PAGE } from '../constants/client';
 export const unitService = {
     getAllPaged,
     getById,
-    book
+    book,
+    search
 };
 
 function getById(id) {
@@ -37,4 +38,13 @@ function book(unitId, year) {
         .then(handleResponse);
 }
 
+function search(str){
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`${BACKEND_URL}/units?q=${str}`, requestOptions)
+        .then(handleResponse);
+}
 

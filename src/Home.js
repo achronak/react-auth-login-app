@@ -14,13 +14,17 @@ class Home extends React.Component {
         this.handleScroll = this.handleScroll.bind(this);
         this.handleDrawer = this.handleDrawer.bind(this);
         this.resetDrawer = this.resetDrawer.bind(this);
+        this.handleSearchBox = this.handleSearchBox.bind(this);
+        this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
 
         this.currPage = 1;
         this.state = {
             drawerVisible: false,
             selectedYear: 0,
             slideText: false,
+            searchToken: ''
         }
+        this.requestStarted = 0;
     }
 
     componentWillMount() {
@@ -182,10 +186,9 @@ class Home extends React.Component {
         )
     }
 
-    render() {
-        const { user, unitsData, unitSingle, loading, error } = this.props;
+    renderHeader(){
+        const { user } = this.props;
         const { drawerVisible } = this.state;
-        const drawerStatus = drawerVisible ? 0: '';
         const sheetStatus = drawerVisible ? 'block': 'none';
 
         return (
@@ -202,11 +205,37 @@ class Home extends React.Component {
                             <img alt="profile-pic" className="profilePic mr-2" src={user.picture}/>
                             <span className="d-inline-block">
                                 {user.name} <br/>
-                                (<Link className="small-text" to="/login">Logout</Link>)
+                                <Link className="small-text" to="/login">Logout</Link>
                             </span>
                         </span>
                     </div>
                 </div>
+            </div>
+        )
+    }
+
+    renderSearchbox() {
+        const { searchToken } = this.state;
+        return (
+            <div className="row mt-5">
+                <form name="form" className="col-sm-12 col-lg-3" onSubmit={this.handleSearchSubmit}>
+                    <div className={'form-group'}>
+                        <input type="text" className="form-control" placeholder="Search..." name="search" value={searchToken} onChange={this.handleSearchBox} />
+                    </div>
+                </form>
+            </div>
+        )
+    }
+    
+    render() {
+        const { unitsData, unitSingle, loading, error } = this.props;
+        const { drawerVisible } = this.state;
+        const drawerStatus = drawerVisible ? 0: '';
+
+        return (
+            <div>
+                {this.renderHeader()}
+                {this.renderSearchbox()}
                 {error &&
                     <div className="alert alert-danger position-fixed float-right" role="alert">
                         Error: {error}
@@ -220,13 +249,10 @@ class Home extends React.Component {
                                 <em>Loading unit information...</em>
                             </div>
                         }
-                        {unitSingle && 
-                            this.renderDrawer(unitSingle)
-                        }
+                        { unitSingle && this.renderDrawer(unitSingle) }
                     </div>
                 </div>
-                
-                <div className="row justify-content-between mt-5">
+                <div className="row justify-content-between mt-2">
                     { unitsData && unitsData.map(raw => {
                         return (
                             this.renderUnit(raw)
@@ -243,6 +269,20 @@ class Home extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    handleSearchSubmit(e) {
+        e.preventDefault();
+        const { searchToken } = this.state;
+        if (Date.now() - this.requestStarted < 500) return;
+
+        this.requestStarted = Date.now();
+        this.props.searchUnits(searchToken);
+    }
+
+    handleSearchBox(e) {
+        const { value } = e.target;
+        this.setState({ searchToken: value });
     }
 
     handleDrawer(e) {
@@ -309,7 +349,8 @@ function mapState(state) {
 const actionCreators = {
     getUnits: unitActions.getAllPaged,
     getUnit:  unitActions.getUnitById,
-    bookUnit: unitActions.bookUnit
+    bookUnit: unitActions.bookUnit,
+    searchUnits: unitActions.searchUnits
 }
 
 const connectedHomePage = connect(mapState, actionCreators)(Home);
