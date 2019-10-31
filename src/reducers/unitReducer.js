@@ -6,64 +6,55 @@ export function units(state = initialState, action) {
   switch (action.type) {
     case unitActionConstants.UNITS_ALL_REQUEST:
       return {
-          loading: true,
-          data: state.data,
-          booking: state.booking
+        ...state,
+        loading: true
       };
     case unitActionConstants.UNITS_ALL_SUCCESS:
       return {
-          data: state.data.concat(action.units.data),
-          total: action.units.meta.totalCount,
-          booking: state.booking
+        ...state,
+        loading: false,
+        data: state.data.concat(action.units.data),
+        total: action.units.meta.totalCount,  
       };
     case unitActionConstants.UNITS_ALL_FAILURE:
       return { 
-          error: action.error,
-          data: state.data,
-          total: state.total
+        ...state,
+        error: action.error
       };
     
     case unitActionConstants.UNIT_ID_REQUEST:
       return {
+        ...state,
         loading: true,
-        data: state.data,
-        total: state.total,
-        booking: state.booking
+        unitData: null
       };
     case unitActionConstants.UNIT_ID_SUCCESS:
       return {
-        data: state.data,
-        total: state.total,
+        ...state,
+        loading: false,
         unitData: action.units,
-        booking: state.booking
       };
     case unitActionConstants.UNIT_ID_FAILURE:
       return { 
-          error: action.error,
-          data: state.data,
-          total: state.total,
-          unitData: state.unitData,
+        ...state,
+        error: action.error,
       };
 
     case unitActionConstants.UNITS_BOOK_REQUEST:
       return {
-        data: state.data,
-        total: state.total,
-        unitData: state.unitData
+        ...state,
+        booking: null,
+        error: null
       };
     case unitActionConstants.UNITS_BOOK_SUCCESS:
       return {
-        data: state.data,
-        total: state.total,
-        unitData: state.unitData,
-        booking: action.bookingReference
+        ...state,
+        booking: action.bookingReference,
       };
     case unitActionConstants.UNITS_BOOK_FAILURE:
-      return { 
-          error: action.error,
-          data: state.data,
-          total: state.total,
-          unitData: state.unitData,
+      return {
+        ...state,
+        error: action.error,
       };
     default:
       return state
