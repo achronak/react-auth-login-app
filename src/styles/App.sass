@@ -2,10 +2,6 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-.text-truncate
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 .loading
     max-width: 70px;
 .mars
@@ -71,8 +67,6 @@
     position: absolute;
     font-size: 14px;
     z-index: 5;
-    .small-text
-        font-size: 13px;
     img.hero
         max-width: 800px;
         width: 100%;
@@ -83,11 +77,15 @@
         border-left: 1px solid #9a9a9a;
         background: #fff;
         transition: all 0.3s ease-out;
+    pre
+        font-size: inherit;
+        font-family: inherit;
+        white-space: pre-line;
     .price b
         background: #a3a3a3;
         color: #fff;
-        padding: 6px 14px;
-        font-size: 14px;
+        padding: 6px 10px;
+        font-size: 13px;
         border-radius: 5px;
     .pill
         padding: 5px 39%;
@@ -100,9 +98,15 @@
             color: #fff;
         &:focus-within
             box-shadow: 0 0 5px 1px #444;
+.small-text
+    font-size: 13px;
 .booked
     color: #e8ad4f;
     text-decoration: underline;
+.alert
+    top: 10px;
+    right: 10px;
+    z-index: 2;
 
 @media (max-width: 960px)
     #drawer>div
@@ -113,3 +117,18 @@
     #drawer>div
         right: -75%;
         width: 75%;
+
+@media (max-width: 600px)
+    .profilePic
+        margin: 0 !important;
+    #drawer
+        .small-text
+            font-size: 12px;
+        .pill
+            padding: 5px 25%;
+            font-size: 12px;
+
+@media (max-width: 320px)
+    .mars
+        font-size: 14px;
+        padding: 11px 4px;

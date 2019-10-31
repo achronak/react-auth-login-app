@@ -71,3 +71,8 @@ export function getScreenResolution() {
        window.screen.height
     ]);
 }
+
+export function formatNewLines(str) {
+    var regex = /<br\s*[\/]?>/gi;
+    return str.replace(regex, "\n");
+}

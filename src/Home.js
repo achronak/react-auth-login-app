@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import Collapse from 'react-bootstrap/Collapse'
 import { Link } from 'react-router-dom';
 import { unitActions } from './actions/unitActions';
 import { PER_PAGE, AVAILABLE_BOOKING_YEARS } from './constants/client';
-import { resolveImg } from './helpers/utils';
+import { resolveImg, formatNewLines } from './helpers/utils';
 import { trapFocus, resetTrapFocus } from './helpers/focus';
 
 class Home extends React.Component {
@@ -18,6 +19,7 @@ class Home extends React.Component {
         this.state = {
             drawerVisible: false,
             selectedYear: 0,
+            slideText: false,
         }
     }
 
@@ -97,10 +99,11 @@ class Home extends React.Component {
     }
 
     renderDrawer(unit) {
-        const { drawerVisible } = this.state;
+        const { drawerVisible, slideText} = this.state;
         drawerVisible && setTimeout(() => {
             trapFocus(document.getElementById('drawer'));
         }, 100);
+        let description = formatNewLines(unit.description);
         return (
             <div>
                 <div>
@@ -120,14 +123,28 @@ class Home extends React.Component {
                         {this.renderRating(unit.rating)}
                     </div>
                     <div className="col-12 mt-2 small-text">
-                        <i>Description:</i> {unit.description}
+                        <i>Description:</i>
+                        <pre>
+                            <div
+                                onClick={() => this.setState({ slideText: !slideText })}
+                                aria-controls="collapse-text"
+                                aria-expanded={slideText}>
+                                {description.substr(0, 160)}
+                                {!slideText && unit.description.length > 160 && ' ...'}
+                            </div>
+                            <Collapse in={slideText}>
+                                <div id="collapse-text">
+                                    {description.substr(160)}
+                                </div>
+                            </Collapse>
+                        </pre>
                     </div>
                     <div className="col-12 mt-3 small-text">
                         <b>Amenities: </b>
                         { unit.amenities.join(', ')}
                     </div>
                     <div className="col-12 mt-3">
-                        <div className="row px-2">
+                        <div className="row">
                             { AVAILABLE_BOOKING_YEARS.map(item => {
                                 let available = {disabled: 'disabled'};
                                 let selectedYear = '';
@@ -170,25 +187,28 @@ class Home extends React.Component {
         const { drawerVisible } = this.state;
         const drawerStatus = drawerVisible ? 0: '';
         const sheetStatus = drawerVisible ? 'block': 'none';
-        
+
         return (
             <div>
                 <div id="sheet" style={{display: sheetStatus}}></div>
                 <div className="row justify-content-between mt-3">
-                    <div className="col-7 mt-3">
+                    <div className="col-8 mt-3">
                         <h5 className="mb-2">
                             Blueground on <span className="mars light">Mars</span>
                         </h5>
                     </div>
-                    <div className="col-5 text-right">
+                    <div className="col-4 text-right">
                         <span>
                             <img alt="profile-pic" className="profilePic mr-2" src={user.picture}/>
-                            {user.name}
-                        </span>(<Link to="/login">Logout</Link>)
+                            <span className="d-inline-block">
+                                {user.name} <br/>
+                                (<Link className="small-text" to="/login">Logout</Link>)
+                            </span>
+                        </span>
                     </div>
                 </div>
-                {error && 
-                    <div className="text-center mt-4 alert alert-danger d-block">
+                {error &&
+                    <div className="alert alert-danger position-fixed float-right" role="alert">
                         Error: {error}
                     </div>
                 }
