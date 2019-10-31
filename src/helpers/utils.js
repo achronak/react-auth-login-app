@@ -73,6 +73,6 @@ export function getScreenResolution() {
 }
 
 export function formatNewLines(str) {
-    var regex = /<br\s*[\/]?>/gi;
-    return str.replace(regex, "\n");
+    let regex = /<br\s*[\/]?>/gi;
+    return str.replace(regex, "");
 }

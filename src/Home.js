@@ -143,7 +143,7 @@ class Home extends React.Component {
                             </Collapse>
                         </pre>
                     </div>
-                    <div className="col-12 mt-3 small-text">
+                    <div className="col-12 mt-0 small-text">
                         <b>Amenities: </b>
                         { unit.amenities.join(', ')}
                     </div>
@@ -260,7 +260,7 @@ class Home extends React.Component {
                     })}
                 </div>
                 <div className="col-md-4 my-4 mx-auto p-4 text-center">
-                    { loading &&
+                    { !drawerVisible && loading &&
                         <div>
                             <img alt="loading" className="loading mb-2 mx-auto d-block" src="/loading.gif"/>
                             <em>Loading units...</em>
